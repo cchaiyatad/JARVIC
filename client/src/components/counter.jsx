@@ -1,11 +1,16 @@
+import "./counter.css";
+
 function Counter(props) {
-  const { value, counter, onChangeValue, onDelete } = props;
+  const { value, index, onChangeValue, onDelete } = props;
   return (
     <div>
-      <button onClick={() => onChangeValue(counter, -1)}>-</button>
-      <span>I am counter with value = {value}</span>
-      <button onClick={() => onChangeValue(counter, 1)}>+</button>
-      <button onClick={() => onDelete(counter)}>Delete</button>
+      <span>
+        Counter #{index + 1} value = {value}
+      </span>
+      <button onClick={() => onChangeValue(index, -1)}>-</button>
+      <button onClick={() => onChangeValue(index, 1)}>+</button>
+      <button onClick={() => onDelete(index)}>Delete</button>
+      <button onClick={() => onChangeValue(index, 0)}>Reset</button>
     </div>
   );
 }

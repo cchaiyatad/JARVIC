@@ -39,6 +39,14 @@ func GetCounter(c *gin.Context) {
 func PostCounter(c *gin.Context) {
 	db := database.GetDB()
 
+	var counters []Counter
+	db.Find(&counters)
+
+	if len(counters) >= 5 {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": "Cannot add new counter"})
+		return
+	}
+
 	var counter Counter
 	c.Bind(&counter)
 

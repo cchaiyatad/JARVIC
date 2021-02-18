@@ -27,7 +27,7 @@ class App extends Component {
   handleAddCounter = () => {
     const counters = [...this.state.counters]
     if (counters.length >= 5) {
-      alert("Error: can not has more than 5 counters")
+      alert("Error: You can't have more than 5 counters")
       return
     }
 
@@ -42,10 +42,12 @@ class App extends Component {
       })
   }
 
-  handleDeleteCounter = (counter) => {
-    CounterService.deleteCounter(counter.id)
+  handleDeleteCounter = (idx) => {
+    const id = this.state.counters[idx].id
+
+    CounterService.deleteCounter(id)
       .then(_ => {
-        const counters = this.state.counters.filter((c) => c !== counter)
+        const counters = this.state.counters.filter((c) => c.id !== id)
         this.setState({ counters: counters })
       })
       .catch((err) => {
@@ -54,10 +56,12 @@ class App extends Component {
       })
   }
 
-  handleChangeValue = (counter, value) => {
+  //if value = 0 mean reset
+  handleChangeValue = (idx, value) => {
     const counters = [...this.state.counters]
-    const idx = counters.indexOf(counter)
-    counters[idx].value += value
+
+    counters[idx].value = value == 0 ? 0 : counters[idx].value + value
+
     this.setState({ counters })
   }
 
@@ -75,11 +79,11 @@ class App extends Component {
         <div>
           <h1>Just A Rather Very Intelligent Counter</h1>
           <h2>J.A.R.V.I.C</h2>
-          {this.state.counters.map((counter) =>
+          {this.state.counters.map((counter, index) =>
             <Counter
               key={counter.id}
               value={counter.value}
-              counter={counter}
+              index={index}
               onChangeValue={this.handleChangeValue}
               onDelete={this.handleDeleteCounter}
             />)}
