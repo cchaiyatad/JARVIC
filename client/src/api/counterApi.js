@@ -1,39 +1,45 @@
-import axios from "axios";
+import axios from "axios"
 
-const counterAPI = "http://localhost:8080/counter";
+const counterAPI = "http://localhost:8080/counter"
 
 class CounterService {
     getCounters = async () => {
         try {
-            const response = await axios.get(counterAPI, {});
+            const response = await axios.get(counterAPI, {})
             return response.data.data
         } catch (err) {
             throw err;
         }
     }
 
-    postCounters = async () => {
+    postCounter = async () => {
         try {
-            const response = await axios.post(counterAPI, {});
+            const response = await axios.post(counterAPI, {})
             return response.data.data
         } catch (err) {
-            throw err;
+            throw err
         }
     }
 
-    deleteCounters = async (id) => {
+    deleteCounter = async (id) => {
         try {
-            const response = await axios.delete(counterAPI + "/" + id, {});
+            const response = await axios.delete(counterAPI + "/" + id, {})
             return response.data.data
         } catch (err) {
-            throw err;
+            throw err
         }
     }
 
-    putCounters = async () => {
-
+    putCounters = async (counters) => {
+        const requests = counters.map((counter) => {
+            return axios.put(counterAPI + "/" + counter.id, { "value": counter.value })
+        })
+        try {
+            axios.all(requests)
+        } catch (err) {
+            throw err
+        }
     }
-
 
 }
 

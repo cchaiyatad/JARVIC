@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import "./app.css"
 import CounterService from "../api/counterApi"
 import Counter from "../components/counter"
@@ -16,10 +16,12 @@ class App extends Component {
         console.log(err)
         alert("Error: Check your connection and try again")
       })
-  }
 
-  componentWillUnmount() {
-    CounterService.getCounters()
+    window.addEventListener('beforeunload', (event) => {
+      event.preventDefault()
+      event.returnValue = ''
+      this.handleSaveValue()
+    })
   }
 
   handleAddCounter = () => {
@@ -29,7 +31,7 @@ class App extends Component {
       return
     }
 
-    CounterService.postCounters()
+    CounterService.postCounter()
       .then(data => {
         counters.push(data)
         this.setState({ counters: counters })
@@ -41,9 +43,9 @@ class App extends Component {
   }
 
   handleDeleteCounter = (counter) => {
-    CounterService.deleteCounters(counter.id)
-      .then(data => {
-        const counters = this.state.counters.filter((c) => c !== counter);
+    CounterService.deleteCounter(counter.id)
+      .then(_ => {
+        const counters = this.state.counters.filter((c) => c !== counter)
         this.setState({ counters: counters })
       })
       .catch((err) => {
@@ -55,10 +57,17 @@ class App extends Component {
   handleChangeValue = (counter, value) => {
     const counters = [...this.state.counters]
     const idx = counters.indexOf(counter)
-    counters[idx].value += value;
-    this.setState({ counters });
+    counters[idx].value += value
+    this.setState({ counters })
   }
 
+  handleSaveValue = () => {
+    CounterService.putCounters(this.state.counters)
+      .catch((err) => {
+        console.log(err)
+        alert("Error: Check your connection and try again")
+      })
+  }
 
   render() {
     return (
@@ -74,11 +83,13 @@ class App extends Component {
               onChangeValue={this.handleChangeValue}
               onDelete={this.handleDeleteCounter}
             />)}
-          <button onClick={() => this.handleAddCounter()}>Add a counter</button>
+          <button onClick={() => this.handleAddCounter()}>
+            Add a counter
+          </button>
         </div>
       </React.Fragment >
-    );
+    )
   }
 }
 
-export default App;
+export default App
