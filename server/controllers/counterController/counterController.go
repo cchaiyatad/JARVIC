@@ -17,7 +17,7 @@ func GetCounters(c *gin.Context) {
 	var counters []Counter
 
 	db.Find(&counters)
-	c.JSON(http.StatusOK, gin.H{"Success": counters})
+	c.JSON(http.StatusOK, gin.H{"data": counters})
 }
 
 func GetCounter(c *gin.Context) {
@@ -29,9 +29,9 @@ func GetCounter(c *gin.Context) {
 
 	//if not found
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusNotFound, gin.H{"Error": "Not Found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Not Found"})
 	} else {
-		c.JSON(http.StatusOK, gin.H{"success": counter})
+		c.JSON(http.StatusOK, gin.H{"data": counter})
 	}
 
 }
@@ -43,9 +43,9 @@ func PostCounter(c *gin.Context) {
 	c.Bind(&counter)
 
 	if err := db.Create(&counter).Error; err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"Error": "Cannot add new counter"})
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": "Cannot add new counter"})
 	} else {
-		c.JSON(http.StatusCreated, gin.H{"Success": counter})
+		c.JSON(http.StatusCreated, gin.H{"data": counter})
 	}
 
 }
@@ -59,7 +59,7 @@ func PutCounter(c *gin.Context) {
 
 	//Not found
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusNotFound, gin.H{"Error": "Not Found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Not Found"})
 		return
 	}
 
@@ -72,7 +72,7 @@ func PutCounter(c *gin.Context) {
 	}
 
 	db.Save(&result)
-	c.JSON(http.StatusAccepted, gin.H{"Success": result})
+	c.JSON(http.StatusAccepted, gin.H{"data": result})
 }
 
 func DeleteCounter(c *gin.Context) {
@@ -84,10 +84,10 @@ func DeleteCounter(c *gin.Context) {
 
 	//Not found
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		c.JSON(http.StatusNotFound, gin.H{"Error": "Not Found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Not Found"})
 		return
 	}
 
 	db.Delete(&counter)
-	c.JSON(http.StatusAccepted, gin.H{"Success": "Counter#" + id + " deleted"})
+	c.JSON(http.StatusAccepted, gin.H{"data": "Counter#" + id + " deleted"})
 }
